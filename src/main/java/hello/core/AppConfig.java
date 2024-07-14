@@ -46,6 +46,11 @@ public class AppConfig {
     /**
      * 중복을 제거하고, 각 역할에 따른 구현이 명시적으로 보이도록 리팩터링
      */
+    /**
+     * 빈 이름은 기본적으로 메서드 이름을 사용 하지만 직접 부여할 수도 있음
+     * 단, 반드시 서로 다른 이름을 부여해야 함
+     * - @Bean(name="memberService")
+     */
     @Bean
     public MemberService memberService() {
         return new MemberServiceImpl(memberRepository());
