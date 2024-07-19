@@ -32,8 +32,8 @@ public class OrderServiceImpl implements OrderService {
     /**
      * OCP, DIP를 지키기 위해 생성자를 이용한 의존성 주입 방식으로 수정
      */
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
@@ -45,5 +45,14 @@ public class OrderServiceImpl implements OrderService {
         int discountPrice = discountPolicy.discount(member, itemPrice);
 
         return new Order(memberId, itemName, itemPrice, discountPrice);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * '@Configuration' 과 싱글톤 - 검증 용도 코드
+     */
+    // 테스트 용도
+    public MemberRepository getMemberRepository() {
+        return memberRepository;
     }
 }

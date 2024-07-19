@@ -15,7 +15,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ApplicationContextExtendsFindTest {
+/**
+ * 스프링 컨테이너에 등록된 스프링 빈 조회 테스트 - 상속 관계
+ */
+class ApplicationContextExtendsFindTest {
 
     AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(TestConfig.class);
 

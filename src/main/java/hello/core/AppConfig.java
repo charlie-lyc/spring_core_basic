@@ -27,6 +27,16 @@ import org.springframework.context.annotation.Configuration;
  * - '@Configuration'
  * - '@Bean'
  */
+
+/**
+ * '@Configuration' 과 싱글톤
+ * - '@Configuration' 은 결국 싱글톤을 보장하기 위한 설정이다!
+ * - 그런데 아래의 코드를 살펴보면,
+ *   '@Bean memberService -> new MemoryMemberRepository()'
+ *   '@Bean orderService -> new MemoryMemberRepository()'
+ *   이렇게 같은 메서드를 두번 호출하여 2개의 객체가 생성되면서 싱글톤을 위반하는 것처럼 보이는데...
+ * - 스프링(싱글톤) 컨테이너는 이 문제를 어떻게 해결하는 걸까?
+ */
 @Configuration
 public class AppConfig {
 
@@ -51,16 +61,45 @@ public class AppConfig {
      * 단, 반드시 서로 다른 이름을 부여해야 함
      * - @Bean(name="memberService")
      */
+    /**
+     *  '@Bean memberService -> new MemoryMemberRepository()'
+     *  '@Bean orderService -> new MemoryMemberRepository()'
+     * 코드로 보기에는 분명히 2번의 new MemoryMemberRepository() 호출로 다른 인스턴스가 되는 것처럼 보이는데
+     * 정말 그런지 로그를 남겨보자!
+     * 결과적으로 아래와 같이 1번씩만 호출되었다!
+     * -> call AppConfig.memberService
+     * -> call AppConfig.memberRepository
+     * -> call AppConfig.orderService
+     */
+    /**
+     * 결론적으로
+     * '@Bean' 만 사용해도 등록은 되지만 싱글톤을 보장하지는 않으며,
+     * '@Configuration' 을 사용하는 것은 CGLIB 기술은 사용해서 싱글톤을 보장하는 것이다.
+     */
+    /**
+     * 테스트로 '@Configuration' 을 삭제하고 실행해보면 아래와 같은 결과를 볼수 있다.
+     * -> call AppConfig.memberService
+     * -> call AppConfig.memberRepository
+     * -> call AppConfig.orderService
+     * -> call AppConfig.memberRepository
+     * -> call AppConfig.memberRepository
+     */
     @Bean
     public MemberService memberService() {
+        // 1번 호출
+        System.out.println("-> call AppConfig.memberService");
         return new MemberServiceImpl(memberRepository());
     }
     @Bean
     public OrderService orderService() {
+        // 1번 호출
+        System.out.println("-> call AppConfig.orderService");
         return new OrderServiceImpl(memberRepository(), discountPolicy());
     }
     @Bean
     public MemberRepository memberRepository() {
+        // 2번 또는 3번 호출 ?
+        System.out.println("-> call AppConfig.memberRepository");
         return new MemoryMemberRepository();
         // return ...
     }
