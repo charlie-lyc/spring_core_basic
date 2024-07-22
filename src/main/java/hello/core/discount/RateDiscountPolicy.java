@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 정률 할인 정책 구현체
  */
 /**
- * 컴포넌트 스캔과 의존 관계 자동 주입
+ * 컴포넌트 스캔과 의존 관계 자동 주입 : @component, @autowired
  */
 @Component
 public class RateDiscountPolicy implements  DiscountPolicy {

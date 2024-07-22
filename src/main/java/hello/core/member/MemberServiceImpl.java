@@ -1,12 +1,13 @@
 package hello.core.member;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * 회원 서비스 구현체
  */
 /**
- * 컴포넌트 스캔과 의존 관계 자동 주입
+ * 컴포넌트 스캔과 의존 관계 자동 주입 : @component, @autowired
  */
 @Component
 public class MemberServiceImpl implements MemberService {
@@ -16,6 +17,8 @@ public class MemberServiceImpl implements MemberService {
      * OCP, DIP를 지키기 위해 생성자를 이용한 의존성 주입 방식으로 수정
      */
     private final MemberRepository memberRepository;
+
+    @Autowired
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
