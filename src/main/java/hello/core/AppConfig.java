@@ -94,7 +94,11 @@ public class AppConfig {
     public OrderService orderService() {
         // 1번 호출
         System.out.println("-> call AppConfig.orderService");
+        ////////////////////////////////////////////////////////////////////
         return new OrderServiceImpl(memberRepository(), discountPolicy());
+        //////////////////////////////////////////////////////////////////// Switch, if you need!
+        //return null;
+        ////////////////////////////////////////////////////////////////////
     }
     @Bean
     public MemberRepository memberRepository() {

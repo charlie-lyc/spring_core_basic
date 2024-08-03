@@ -1,8 +1,5 @@
 package hello.core.order;
 
-//import hello.core.discount.RateDiscountPolicy;
-//import hello.core.discount.FixDiscountPolicy;
-
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
@@ -39,8 +36,8 @@ public class OrderServiceImpl implements OrderService {
     /**
      * OCP, DIP를 지키기 위해 생성자를 이용한 의존성 주입 방식으로 수정
      */
-//    private final MemberRepository memberRepository;
-//    private final DiscountPolicy discountPolicy;
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
     /**
      * 다양한 의존 관계 주입 방법
      * 1. 생성자 주입
@@ -49,16 +46,21 @@ public class OrderServiceImpl implements OrderService {
      * - [불변], [필수] 의존 관계에 사용
      * - 생성자가 딱 1개만 있다면 '@Autowired' 를 생략해도 자동 주입 된다. 단, 스프링 빈일 경우에만 해당된다.
      */
-//    //@Autowired
-//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-//        this.memberRepository = memberRepository;
-//        this.discountPolicy = discountPolicy;
-//    }
+    @Autowired
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+    /**
+     * 왜 생성자 주입을 선택해야 하는가?
+     * - 의존관계 주입이 이루어 지지 않은 경우 NullPointerException 이 아닌 '컴파일 오류' 발생으로 원인을 알기 쉬움
+     * - 'final' 키워드 사용으로 한번 주입되면 바꿀 수 없음
+     * - 의존관계 일부의 주입이 누락될 경우에도 '컴파일 오류' 로 친절하게 알려줌
+     *   예) java: variable discountPolicy might not have been initialized
+     */
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
     /**
      * 다양한 의존 관계 주입 방법
      * 2. 수정자 주입(setter 주입)
@@ -68,17 +70,20 @@ public class OrderServiceImpl implements OrderService {
      */
     /**
      * '@Autowired' 기본 동작은 주입할 대상이 없으면 오류가 발생
-     * 따라서 주입할 대상이 없어도 동작하게 하려면 '@Autowired(required = false)'로 설정
-     * 즉 '@Autowired(required = true)' 이 기본 설정
+     * 따라서 주입할 대상이 없이 제대로 동작하게 하려면 '@Autowired(required = false)'로 옵션 설정
+     * 즉 '@Autowired(required = true)' 은 기본 설정으로 필수적으로 자동 주입이 되고,
+     * '@Autowired(required = false)' 은 옵션 설정으로 대상이 없을 경우 자동 주입이 (호출)되지 않음
      */
-    @Autowired(required = false)
-    public void setMemberRepository(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-    @Autowired
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
-        this.discountPolicy = discountPolicy;
-    }
+//    private MemberRepository memberRepository;
+//    private DiscountPolicy discountPolicy;
+//    @Autowired(required = false)
+//    public void setMemberRepository(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
+//    }
+//    @Autowired
+//    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+//        this.discountPolicy = discountPolicy;
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,21 +98,30 @@ public class OrderServiceImpl implements OrderService {
 //    @Autowired private final DiscountPolicy discountPolicy;
 
     ////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * 다양한 의존 관계 주입 방법
      * 4. 일반 메서드 주입
+     * - 한번에 여러 필드를 주입 가능
+     * - 잘 사용하지 않음
      */
+//    private MemberRepository memberRepository;
+//    private DiscountPolicy discountPolicy;
+//    @Autowired
+//    public void init(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+//        this.memberRepository = memberRepository;
+//        this.discountPolicy = discountPolicy;
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * AppConfig 예시 때문에 어쩔 수 없이 이 생성자를 남겨 둔다.
-     * 생성자 주입 방식이 아니라면 이 생성자는 필요없다.
+     * AppConfig 예시 때문에 이 생성자를 남겨 둔다.
      */
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-        this.memberRepository = memberRepository;
-        this.discountPolicy = discountPolicy;
-    }
+//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+//        this.memberRepository = memberRepository;
+//        this.discountPolicy = discountPolicy;
+//    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
